@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Leitor TTS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="erro"></div>
+
+<div id="telaEntrada">
+  <textarea id="texto" placeholder="Cole o texto aqui..."></textarea>
+  <div class="linha">
+    <button id="btnColar">Colar da área de transferência</button>
+    <button id="btnLer" class="forte">Começar a ler</button>
+  </div>
+</div>
+
+<div id="telaLeitor" class="oculta">
+  <div id="palco"><span id="palavra">...</span></div>
+  <div id="barra">
+    <button id="btnVoltar">Voltar</button>
+    <button id="btnPlay" class="forte">PLAY</button>
+    <button class="vel" data-v="1">1x</button>
+    <button class="vel" data-v="1.5">1.5x</button>
+    <button class="vel" data-v="2">2x</button>
+    <span id="contador">0/0</span>
+  </div>
+</div>
+
+<script>
+window.addEventListener('error', function (e) {
+  mostrarErro('ERRO: ' + e.message + ' (linha ' + e.lineno + ')');
+});
+window.addEventListener('unhandledrejection', function (e) {
+  mostrarErro('ERRO: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+});
+function mostrarErro(t) {
+  var d = document.getElementById('erro');
+  d.style.display = 'block';
+  d.textContent = t;
+}
+</script>
+<script src="dicionario.js" onerror="mostrarErro('Nao achei dicionario.js')"></script>
+<script src="app.js" onerror="mostrarErro('Nao achei app.js')"></script>
+</body>
+</html>

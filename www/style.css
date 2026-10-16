@@ -1,0 +1,20 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; background: #111; color: #eee; font-family: sans-serif; }
+#erro { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 99; background: #b00020; color: #fff; padding: 10px; font-size: 16px; }
+.oculta { display: none !important; }
+#telaEntrada { display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 10px; }
+#texto { flex: 1; font-size: 18px; background: #222; color: #eee; border: 1px solid #444; border-radius: 8px; padding: 10px; }
+.linha { display: flex; gap: 10px; }
+button { font-size: 18px; padding: 12px 16px; border: 0; border-radius: 8px; background: #333; color: #eee; }
+button.forte { background: #1e88e5; color: #fff; }
+button.ativo { background: #43a047; color: #fff; }
+.linha button { flex: 1; }
+#telaLeitor { display: flex; flex-direction: column; height: 100%; }
+#palco { flex: 1; display: flex; align-items: center; justify-content: center; }
+#palavra { font-size: 15vh; font-weight: bold; text-align: center; padding: 0 20px; }
+#barra { display: flex; align-items: center; gap: 8px; padding: 8px; background: #1b1b1b; }
+#contador { margin-left: auto; font-size: 16px; color: #aaa; }
+.c-verbo { color: #ff5252; }
+.c-substantivo { color: #4fc3f7; }
+.c-adjetivo { color: #ffd54f; }
+.c-outro { color: #eeeeee; }
