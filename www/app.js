@@ -6,6 +6,9 @@ var tocando = false;
 var velocidade = 1;
 var ficha = 0;
 
+// Ate esta velocidade o app usa a voz. Acima disso, leitura so visual (sem audio).
+var VELOCIDADE_MAXIMA_AUDIO = 2;
+
 function $(id) { return document.getElementById(id); }
 function esperar(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
@@ -29,6 +32,13 @@ function mostrar() {
   $('contador').textContent = (idx + 1) + '/' + palavras.length;
 }
 
+// Tempo que cada palavra fica na tela quando nao tem audio.
+// 3x = 350 palavras/min ... 10x = 700 palavras/min ... 20x = 1200 palavras/min
+function tempoVisual() {
+  var palavrasPorMinuto = 300 + (velocidade - 2) * 50;
+  return 60000 / palavrasPorMinuto;
+}
+
 async function falar(texto) {
   if (!TTS) { throw new Error('Plugin de voz nao encontrado (so funciona no APK)'); }
   await TTS.speak({ text: texto, lang: 'pt-BR', rate: velocidade, pitch: 1.0, volume: 1.0, category: 'playback' });
@@ -42,7 +52,11 @@ async function rodar() {
     while (tocando && minha === ficha && idx < palavras.length) {
       mostrar();
       var p = palavras[idx];
-      if (p.limpa) await falar(p.limpa);
+      if (velocidade <= VELOCIDADE_MAXIMA_AUDIO) {
+        if (p.limpa) await falar(p.limpa);
+      } else {
+        await esperar(tempoVisual());
+      }
       if (minha !== ficha) return;
       var pausa = p.pausa;
       if (velocidade > 1) pausa = pausa / velocidade;
