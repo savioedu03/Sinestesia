@@ -45,7 +45,7 @@ async function rodar() {
       if (p.limpa) await falar(p.limpa);
       if (minha !== ficha) return;
       var pausa = p.pausa;
-      if (velocidade > 2) pausa = pausa / 2;
+      if (velocidade > 1) pausa = pausa / velocidade;
       if (pausa > 0) await esperar(pausa);
       if (minha !== ficha) return;
       idx++;
@@ -94,7 +94,7 @@ $('btnVoltar').addEventListener('click', async function () {
 
 $('btnPlay').addEventListener('click', async function () {
   if (tocando) { await parar(); }
-  else { if (idx >= palavras.length - 1 && !tocando) { /* continua da ultima */ } rodar(); }
+  else { rodar(); }
 });
 
 document.querySelectorAll('.vel').forEach(function (b) {
