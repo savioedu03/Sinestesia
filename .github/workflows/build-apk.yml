@@ -32,6 +32,27 @@ jobs:
           sed -i 's/<activity/<activity android:screenOrientation="landscape"/' $M
           sed -i 's#</manifest>#<queries><intent><action android:name="android.intent.action.TTS_SERVICE"/></intent></queries></manifest>#' $M
 
+      - name: Copiar codigo nativo
+        run: |
+          D=android/app/src/main/java/com/leitortts/app
+          mkdir -p $D
+          cp nativo/SintesePlugin.java $D/SintesePlugin.java
+          cp nativo/MainActivity.java $D/MainActivity.java
+
+      - name: Icone do app
+        run: |
+          R=android/app/src/main/res
+          rm -rf $R/mipmap-anydpi-v26
+          rm -f $R/mipmap-*/ic_launcher*.webp
+          for par in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
+            d=${par%%:*}
+            t=${par##*:}
+            mkdir -p $R/mipmap-$d
+            convert recursos/icone.png -resize ${t}x${t} $R/mipmap-$d/ic_launcher.png
+            cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_round.png
+            cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_foreground.png
+          done
+
       - name: Sincronizar
         run: npx cap sync android
 
