@@ -46,22 +46,24 @@ jobs:
           cp SintesePlugin.java $D/SintesePlugin.java
           cp MainActivity.java $D/MainActivity.java
 
-      # AQUI ESTÁ A CORREÇÃO: Instalar o ImageMagick
-      - name: Instalar ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
-
       - name: Icone do app
         run: |
           R=android/app/src/main/res
+          # Remove os ícones padrão do Capacitor para não dar conflito
           rm -rf $R/mipmap-anydpi-v26
           rm -f $R/mipmap-*/ic_launcher*.webp
-          for par in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
-            d=${par%%:*} t=${par##*:}
-            mkdir -p $R/mipmap-$d
-            convert icone.png -resize ${t}x${t} $R/mipmap-$d/ic_launcher.png
-            cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_round.png
-            cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_foreground.png
-          done
+          rm -f $R/mipmap-*/ic_launcher*.png
+          
+          # Copia o seu cérebro direto para a pasta. O Android se vira para ajustar o tamanho.
+          cp icone.png $R/mipmap-xxxhdpi/ic_launcher.png
+          cp icone.png $R/mipmap-xxxhdpi/ic_launcher_round.png
+          cp icone.png $R/mipmap-xxxhdpi/ic_launcher_foreground.png
+          
+          cp icone.png $R/mipmap-xxhdpi/ic_launcher.png
+          cp icone.png $R/mipmap-xxhdpi/ic_launcher_round.png
+          
+          cp icone.png $R/mipmap-xhdpi/ic_launcher.png
+          cp icone.png $R/mipmap-xhdpi/ic_launcher_round.png
 
       - name: Sincronizar
         run: npx cap sync android
