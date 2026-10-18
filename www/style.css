@@ -2,19 +2,54 @@
 html, body { margin: 0; height: 100%; background: #111; color: #eee; font-family: sans-serif; }
 #erro { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 99; background: #b00020; color: #fff; padding: 10px; font-size: 16px; }
 .oculta { display: none !important; }
-#telaEntrada { display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 10px; }
-#texto { flex: 1; font-size: 18px; background: #222; color: #eee; border: 1px solid #444; border-radius: 8px; padding: 10px; }
+.tela { display: flex; flex-direction: column; height: 100%; padding: 10px; gap: 10px; }
+.topo { display: flex; align-items: center; gap: 10px; }
+.titulo { font-size: 20px; font-weight: bold; flex: 1; }
+textarea, input { font-size: 18px; background: #222; color: #eee; border: 1px solid #444; border-radius: 8px; padding: 10px; }
+#texto { flex: 1; }
+#io { height: 90px; font-size: 14px; }
 .linha { display: flex; gap: 10px; }
+.linha input { flex: 1; min-width: 0; }
 button { font-size: 18px; padding: 12px 16px; border: 0; border-radius: 8px; background: #333; color: #eee; }
+button.pequeno { padding: 8px 14px; }
 button.forte { background: #1e88e5; color: #fff; }
 button.ativo { background: #43a047; color: #fff; }
 .linha button { flex: 1; }
-#telaLeitor { display: flex; flex-direction: column; height: 100%; }
+
+#telaLeitor { padding: 0; gap: 0; }
 #palco { flex: 1; display: flex; align-items: center; justify-content: center; }
 #palavra { font-size: 15vh; font-weight: bold; text-align: center; padding: 0 20px; }
+#marcar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 6px; flex-wrap: wrap; }
+#marcar span { color: #aaa; }
+#status { text-align: center; color: #aaa; font-size: 14px; min-height: 20px; padding: 2px; }
 #barra { display: flex; align-items: center; gap: 8px; padding: 8px; background: #1b1b1b; }
-#contador { margin-left: auto; font-size: 16px; color: #aaa; }
+#barra > button, #contador { flex-shrink: 0; }
+#velocidades { display: flex; gap: 6px; flex: 1; min-width: 0; overflow-x: auto; padding: 2px 0; }
+#velocidades button { flex-shrink: 0; min-width: 56px; }
+#velocidades button.visual { border: 1px dashed #777; }
+#contador { font-size: 16px; color: #aaa; }
+
+.cor.azul { background: #0277bd; color: #fff; }
+.cor.vermelho { background: #c62828; color: #fff; }
+.cor.dourado { background: #f9a825; color: #000; }
+.cor.cinza { background: #444; color: #fff; }
+
+#abas { display: flex; gap: 8px; }
+.aba { flex: 1; background: #2a2a2a; }
+.aba.azul.ativo { background: #0277bd; }
+.aba.vermelho.ativo { background: #c62828; }
+.aba.dourado.ativo { background: #f9a825; color: #000; }
+#lista { flex: 1; overflow-y: auto; background: #1a1a1a; border-radius: 8px; padding: 6px; }
+.item { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-bottom: 1px solid #2a2a2a; }
+.item .pal { flex: 1; font-size: 20px; }
+.item button { padding: 6px 12px; font-size: 16px; }
+.vazio { color: #777; padding: 16px; text-align: center; }
+
 .c-verbo { color: #ff5252; }
 .c-substantivo { color: #4fc3f7; }
 .c-adjetivo { color: #ffd54f; }
 .c-outro { color: #eeeeee; }
+
+#velCustom { width: 70px; flex-shrink: 0; padding: 8px; }
+#btnVelOk { flex-shrink: 0; padding: 10px 12px; }
+#status.aviso { color: #ffd54f; font-size: 20px; font-weight: bold; }
