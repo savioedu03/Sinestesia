@@ -1,5 +1,4 @@
 name: Build APK
-
 on:
   push:
     branches: [ main ]
@@ -10,11 +9,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -23,24 +20,19 @@ jobs:
       - name: Conferir arquivos
         run: |
           ERRO=0
-          if [ ! -f nativo/SintesePlugin.java ] && [ ! -f SintesePlugin.java ]; then echo "::error::FALTA o arquivo SintesePlugin.java (suba na raiz do repositorio)"; ERRO=1; fi
-          if [ ! -f nativo/MainActivity.java ] && [ ! -f MainActivity.java ]; then echo "::error::FALTA o arquivo MainActivity.java (suba na raiz do repositorio)"; ERRO=1; fi
-          if [ ! -f recursos/icone.png ] && [ ! -f icone.png ]; then echo "::error::FALTA o arquivo icone.png (suba na raiz do repositorio)"; ERRO=1; fi
+          if [ ! -f SintesePlugin.java ]; then echo "::error::FALTA o arquivo SintesePlugin.java na raiz"; ERRO=1; fi
+          if [ ! -f MainActivity.java ]; then echo "::error::FALTA o arquivo MainActivity.java na raiz"; ERRO=1; fi
+          if [ ! -f icone.png ]; then echo "::error::FALTA o arquivo icone.png na raiz"; ERRO=1; fi
           for f in index.html app.js style.css dicionario.js; do
             if [ ! -f www/$f ]; then echo "::error::FALTA www/$f"; ERRO=1; fi
           done
-          if ! grep -q "Sinestesia" www/index.html 2>/dev/null; then echo "::error::www/index.html ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
-          if ! grep -q "Sintese" www/app.js 2>/dev/null; then echo "::error::www/app.js ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
-          if ! grep -q "clipboard" package.json; then echo "::error::package.json ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
-          if ! grep -q "Sinestesia" capacitor.config.json; then echo "::error::capacitor.config.json ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
+          if ! grep -q "Sinestesia" www/index.html 2>/dev/null; then echo "::error::www/index.html esta velho."; ERRO=1; fi
           exit $ERRO
 
       - name: Instalar dependencias
         run: npm install
-
       - name: Criar projeto Android
         run: npx cap add android
-
       - name: Travar paisagem e liberar TTS
         run: |
           M=android/app/src/main/AndroidManifest.xml
@@ -51,36 +43,29 @@ jobs:
         run: |
           D=android/app/src/main/java/com/leitortts/app
           mkdir -p $D
-          S=nativo
-          if [ ! -f nativo/SintesePlugin.java ]; then S=.; fi
-          cp $S/SintesePlugin.java $D/SintesePlugin.java
-          cp $S/MainActivity.java $D/MainActivity.java
+          cp SintesePlugin.java $D/SintesePlugin.java
+          cp MainActivity.java $D/MainActivity.java
 
       - name: Icone do app
         run: |
           R=android/app/src/main/res
-          I=recursos/icone.png
-          if [ ! -f $I ]; then I=icone.png; fi
           rm -rf $R/mipmap-anydpi-v26
           rm -f $R/mipmap-*/ic_launcher*.webp
           for par in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
-            d=${par%%:*}
-            t=${par##*:}
+            d=${par%%:*} t=${par##*:}
             mkdir -p $R/mipmap-$d
-            convert $I -resize ${t}x${t} $R/mipmap-$d/ic_launcher.png
+            convert icone.png -resize ${t}x${t} $R/mipmap-$d/ic_launcher.png
             cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_round.png
             cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_foreground.png
           done
 
       - name: Sincronizar
         run: npx cap sync android
-
       - name: Gerar APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-
       - uses: actions/upload-artifact@v4
         with:
           name: leitor-tts-apk
