@@ -20,6 +20,21 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Conferir arquivos
+        run: |
+          ERRO=0
+          if [ ! -f nativo/SintesePlugin.java ] && [ ! -f SintesePlugin.java ]; then echo "::error::FALTA o arquivo SintesePlugin.java (suba na raiz do repositorio)"; ERRO=1; fi
+          if [ ! -f nativo/MainActivity.java ] && [ ! -f MainActivity.java ]; then echo "::error::FALTA o arquivo MainActivity.java (suba na raiz do repositorio)"; ERRO=1; fi
+          if [ ! -f recursos/icone.png ] && [ ! -f icone.png ]; then echo "::error::FALTA o arquivo icone.png (suba na raiz do repositorio)"; ERRO=1; fi
+          for f in index.html app.js style.css dicionario.js; do
+            if [ ! -f www/$f ]; then echo "::error::FALTA www/$f"; ERRO=1; fi
+          done
+          if ! grep -q "Sinestesia" www/index.html 2>/dev/null; then echo "::error::www/index.html ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
+          if ! grep -q "Sintese" www/app.js 2>/dev/null; then echo "::error::www/app.js ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
+          if ! grep -q "clipboard" package.json; then echo "::error::package.json ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
+          if ! grep -q "Sinestesia" capacitor.config.json; then echo "::error::capacitor.config.json ainda e a versao ANTIGA. Substitua pelo novo."; ERRO=1; fi
+          exit $ERRO
+
       - name: Instalar dependencias
         run: npm install
 
@@ -36,19 +51,23 @@ jobs:
         run: |
           D=android/app/src/main/java/com/leitortts/app
           mkdir -p $D
-          cp nativo/SintesePlugin.java $D/SintesePlugin.java
-          cp nativo/MainActivity.java $D/MainActivity.java
+          S=nativo
+          if [ ! -f nativo/SintesePlugin.java ]; then S=.; fi
+          cp $S/SintesePlugin.java $D/SintesePlugin.java
+          cp $S/MainActivity.java $D/MainActivity.java
 
       - name: Icone do app
         run: |
           R=android/app/src/main/res
+          I=recursos/icone.png
+          if [ ! -f $I ]; then I=icone.png; fi
           rm -rf $R/mipmap-anydpi-v26
           rm -f $R/mipmap-*/ic_launcher*.webp
           for par in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
             d=${par%%:*}
             t=${par##*:}
             mkdir -p $R/mipmap-$d
-            convert recursos/icone.png -resize ${t}x${t} $R/mipmap-$d/ic_launcher.png
+            convert $I -resize ${t}x${t} $R/mipmap-$d/ic_launcher.png
             cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_round.png
             cp $R/mipmap-$d/ic_launcher.png $R/mipmap-$d/ic_launcher_foreground.png
           done
