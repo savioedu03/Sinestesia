@@ -1,5 +1,8 @@
 {
   "appId": "com.leitortts.app",
-  "appName": "Leitor TTS",
-  "webDir": "www"
+  "appName": "Sinestesia",
+  "webDir": "www",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "force"
+  }
 }
